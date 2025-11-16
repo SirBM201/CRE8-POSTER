@@ -1,1 +1,33 @@
+name: Daily YouTube Upload
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # Runs every day at 5am UTC
+  workflow_dispatch: {}  # Allow manual run
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run YouTube upload script
+        env:
+          R2_BASE_URL: ${{ secrets.R2_BASE_URL }}
+          R2_PREFIX_PATH: ${{ secrets.R2_PREFIX_PATH }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_MADE_FOR_KIDS: ${{ secrets.YT_MADE_FOR_KIDS }}
+        run: python upload_today_to_youtube.py
 
