@@ -2,8 +2,8 @@ name: Daily YouTube Upload
 
 on:
   schedule:
-    - cron: "0 5 * * *"   # Runs every day at 5am UTC
-  workflow_dispatch: {}  # Allow manual run
+    - cron: "0 6 * * *"     # Runs every day at 6 AM UTC
+  workflow_dispatch:        # Manual trigger button
 
 jobs:
   upload:
@@ -13,13 +13,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+        # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
 
       - name: Run YouTube upload script
         env:
@@ -29,5 +31,5 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YT_MADE_FOR_KIDS: ${{ secrets.YT_MADE_FOR_KIDS }}
-        run: python upload_today_to_youtube.py
-
+        run: |
+          python upload_today_to_youtube.py
